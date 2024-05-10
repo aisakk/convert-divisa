@@ -1,0 +1,64 @@
+<!DOCTYPE html>
+<html lang="en">
+  <head>
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <title>Document</title>
+    <link
+      rel="stylesheet"
+      href="https://cdn.jsdelivr.net/gh/lipis/flag-icons@7.0.0/css/flag-icons.min.css"
+    />
+    <link rel="stylesheet" href="css/style.css">
+  </head>
+  <body>
+        <main>
+            <section id="formulario">
+                <form action="" name="form">
+                    <input type="text" id="numberCurrency" name="numberCurrency">
+                    <select name="currencyCountry" id="currencyCountry">
+                        <option value="" selected disabled> Moneda de un Pais</option>
+                        <option value="argentina">Argentina</option>
+                        <option value="colombia">Colombia</option>
+                        <option value="chile">Chile</option>
+                        <option value="mexico">Mexico</option>
+                        <option value="eeuu">Estados Unidos</option>
+                        <option value="peru">Peru</option>
+                        <option value="venezuela">Venezuela</option>
+                    </select>
+                    <button type="submit">Calcular</button>
+                </form>
+            </section>
+            <section id="divisas_country">
+                <div class="card argentina">
+                    <span class="fi fi-ar"></span>
+                    <p class="text"></p>
+                </div>
+                <div class="card colombia">
+                    <span class="fi fi-co"></span>
+                    <p class="text"></p>
+                </div>
+                <div class="card chile">
+                    <span class="fi fi-cl"></span>
+                    <p class="text"></p>
+                </div>
+                <div class="card mexico">
+                    <span class="fi fi-mx"></span>
+                    <p class="text"></p>
+                </div>
+                <div class="card eeuu">
+                    <span class="fi fi-us"></span>
+                    <p class="text"></p>
+                </div>
+                <div class="card peru">
+                    <span class="fi fi-pe"></span>
+                    <p class="text"></p>
+                </div>
+                <div class="card venezuela">
+                    <span class="fi fi-ve"></span>
+                    <p class="text"></p>
+                </div>
+            </section>
+        </main>
+        <script src="js/currency.js"></script>
+  </body>
+</html>
