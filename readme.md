@@ -1,4 +1,4 @@
-Tasa de cambio del dolar para los paises:
+Tasa de cambio del dolar y de otras divisas para los  paises:
 -Peru
 -Chile
 -Colombia
