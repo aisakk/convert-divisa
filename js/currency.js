@@ -49,7 +49,7 @@ formulario.addEventListener("submit", (event) => {
     handleDomCard(currencyValue);
   } else {
     // Optional: Inform user they haven't changed the selection
-    alert("Please select a different currency.");
+    alert("Porfavor selecciona la moneda de un pais");
     event.preventDefault(); // Prevent submission even if not changed
   }
 });
