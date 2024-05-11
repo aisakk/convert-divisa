@@ -31,16 +31,30 @@ let choiceCurrencyCountry = [
     currency: "VES",
   },
 ];
+const numberInput = document.getElementById("numberCurrency");
+
 currencyCountry.addEventListener("change", () => {
   let currencyValue = currencyCountry.value;
-  console.log(saveApiCurrency(currencyValue));
+  // Check if user has changed the value
+  if (currencyValue !== "defecto") {
+    saveApiCurrency(currencyValue);
+  }
 });
 formulario.addEventListener("submit", (event) => {
-  event.preventDefault();
-  let currencyValue = currencyCountry.value;
-  printCurrencyValue(currencyValue);
-  handleDomCard(currencyValue);
+  // Only submit if user has changed the value
+  if (currencyCountry.value !== "defecto") {
+    event.preventDefault();
+    let currencyValue = currencyCountry.value;
+    printCurrencyValue(currencyValue);
+    handleDomCard(currencyValue);
+  } else {
+    // Optional: Inform user they haven't changed the selection
+    alert("Please select a different currency.");
+    event.preventDefault(); // Prevent submission even if not changed
+  }
 });
+ // Assuming this is the input field ID
+restrictInputToNumbers(numberInput);
 
 function saveApiCurrency(currency) {
   if (
@@ -53,24 +67,34 @@ function saveApiCurrency(currency) {
     fetch(
       `https://v6.exchangerate-api.com/v6/${API_KEY}/latest/${matchingCurrency.currency}`
     )
-      .then((response) => response.json())
+      .then((response) =>{
+        if(response.status === 403 || response.status === 500){
+          localStorage.clear()
+          return alert('Error en la peticion de la api: Status ' + response.status);
+        }
+        if(response.ok){
+          return response.json()
+        }
+      })
       .then((data) => {
         const stringifiedData = JSON.stringify(data);
         localStorage.setItem(`exchange_${currency}`, stringifiedData);
-        let allCurrency = choiceCurrencyCountry.map((dataMap) => {
+        choiceCurrencyCountry.map((dataMap) => {
           dataMap.value = data.conversion_rates[dataMap.currency];
           return dataMap;
         });
-        return allCurrency;
+        return choiceCurrencyCountry; 
+      }).catch((error) =>{
+        alert('Hubo un error con la api: '+ error)
       });
   } else {
     let storageCurrency = localStorage.getItem(`exchange_${currency}`);
     let parseCurrency = JSON.parse(storageCurrency);
-    let allCurrency = choiceCurrencyCountry.map((data) => {
+    choiceCurrencyCountry.map((data) => {
       data.value = parseCurrency.conversion_rates[data.currency];
       return data;
     });
-    return allCurrency;
+    return choiceCurrencyCountry;
   }
 }
 
@@ -80,6 +104,14 @@ function handleDomCard(country) {
   // Loop through all cards and reset their display styles
   cardElements.forEach((cardElement) => {
     cardElement.style.display = "flex"; // Reset display to default (usually visible)
+    cardElement.classList.add("fade-out"); 
+    
+    setTimeout(() => {
+      if (cardElement.classList[1] !== `.${country}-card`) {
+        // Fade out cards except the selected one
+        cardElement.classList.remove("fade-out");
+      }
+    }, 100);
   });
 
   // Now, specifically hide the newly selected card
@@ -95,6 +127,7 @@ function printCurrencyValue(country) {
   const cardElements = document.querySelectorAll(".card");
 
   const formValue = document.forms["form"]["numberCurrency"].value; // Access form value
+  
   cardElements.forEach((cardElement) => {
     cardElement.style.display = "flex"; // Reset display to default (usually visible)
     cardElement.style.flexDirection = "column";
@@ -104,13 +137,32 @@ function printCurrencyValue(country) {
     ); // Remove trailing "-card"
     if (matchingCurrency) {
       const convertedValue = formValue * matchingCurrency.value; // Calculate value for the matching currency
-      cardElement.querySelector(
-        "p.text"
-      ).textContent = `${convertedValue} ${matchingCurrency.currency}`;
+      
+        cardElement.querySelector(
+          "p.text"
+        ).textContent = `${convertedValue} ${matchingCurrency.currency}`;
+     
+     
     } else {
       // Handle cases where exchange rate is not available (optional)
       cardElement.querySelector("p.text").textContent =
-        "Exchange rate unavailable";
+        "Vuelva intentar error en la conversion";
+    }
+  });
+}
+function restrictInputToNumbers(inputElement) {
+  // Add event listener for keypress event
+  inputElement.addEventListener("keypress", (event) => {
+    // Get the character code of the pressed key
+    const keyCode = event.keyCode;
+
+    // Allow backspace, delete, tab, and decimal point (if allowed)
+    const allowedKeys = [8, 9, 13, 46]; // Backspace, Tab, Enter, Decimal point
+
+    // Check if the pressed key is a number (0-9) or an allowed key
+    if (!(keyCode >= 48 && keyCode <= 57) && !allowedKeys.includes(keyCode)) {
+      // Prevent default behavior (prevent character from being entered)
+      event.preventDefault();
     }
   });
 }
