@@ -32,6 +32,7 @@ let choiceCurrencyCountry = [
   },
 ];
 const numberInput = document.getElementById("numberCurrency");
+let isDataReady = false; 
 
 currencyCountry.addEventListener("change", () => {
   let currencyValue = currencyCountry.value;
@@ -41,17 +42,22 @@ currencyCountry.addEventListener("change", () => {
   }
 });
 formulario.addEventListener("submit", (event) => {
+  event.preventDefault()
+  let currencyValue = currencyCountry.value;
   // Only submit if user has changed the value
   if (currencyCountry.value !== "defecto") {
-    event.preventDefault();
-    let currencyValue = currencyCountry.value;
-    printCurrencyValue(currencyValue);
-    handleDomCard(currencyValue);
+    if(isDataReady){
+      printCurrencyValue(currencyValue);
+      handleDomCard(currencyValue);
+    }else{
+      alert('Esperando a que se efectue la peticion de la moneda')
+    }
+    
   } else {
     // Optional: Inform user they haven't changed the selection
     alert("Porfavor selecciona la moneda de un pais");
     event.preventDefault(); // Prevent submission even if not changed
-  }
+  } 
 });
  // Assuming this is the input field ID
 restrictInputToNumbers(numberInput);
@@ -73,6 +79,7 @@ function saveApiCurrency(currency) {
           return alert('Error en la peticion de la api: Status ' + response.status);
         }
         if(response.ok){
+          isDataReady = true; 
           return response.json()
         }
       })
@@ -83,8 +90,10 @@ function saveApiCurrency(currency) {
           dataMap.value = data.conversion_rates[dataMap.currency];
           return dataMap;
         });
+        
         return choiceCurrencyCountry; 
       }).catch((error) =>{
+         isDataReady = false; 
         alert('Hubo un error con la api: '+ error)
       });
   } else {
@@ -94,9 +103,10 @@ function saveApiCurrency(currency) {
       data.value = parseCurrency.conversion_rates[data.currency];
       return data;
     });
+
     return choiceCurrencyCountry;
   }
-}
+} 
 
 function handleDomCard(country) {
   const cardElements = document.querySelectorAll(".card"); // Get all card elements
@@ -136,11 +146,14 @@ function printCurrencyValue(country) {
       (data) => data.country === countryClass
     ); // Remove trailing "-card"
     if (matchingCurrency) {
-      const convertedValue = formValue * matchingCurrency.value; // Calculate value for the matching currency
+      if(!isNaN(matchingCurrency.value)){
+        const convertedValue = formValue * matchingCurrency.value; // Calculate value for the matching currency
       
         cardElement.querySelector(
           "p.text"
-        ).textContent = `${convertedValue} ${matchingCurrency.currency}`;
+        ).textContent = `${convertedValue.toFixed(2)} ${matchingCurrency.currency}`;
+      }
+     
      
      
     } else {
