@@ -97,6 +97,7 @@ function saveApiCurrency(currency) {
         alert('Hubo un error con la api: '+ error)
       });
   } else {
+    isDataReady = true
     let storageCurrency = localStorage.getItem(`exchange_${currency}`);
     let parseCurrency = JSON.parse(storageCurrency);
     choiceCurrencyCountry.map((data) => {
