@@ -6,6 +6,7 @@ body{
     width: 100vw;
     height: 100vh;
     background-color: #222f3e;
+    overflow-x: hidden;
 }
 main{
     width: 100%;
@@ -87,6 +88,10 @@ button[type="submit"]:hover{
     height: 50px;
     width: 50px;
     margin-top: 10%;
+}
+
+input, select, option{
+    background-color: #222f3e;
 }
 
 @media  screen and (min-width:800px) {
